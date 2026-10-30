@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SchemeMatch — Pitch Deck</title>
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+
+  :root {
+    --ink: #070c17;
+    --panel: #0f1829;
+    --panel-2: #131f36;
+    --line: rgba(255, 255, 255, 0.10);
+    --text: #eaf0fb;
+    --muted: #9db0cd;
+    --amber: #f5a524;
+    --amber-soft: rgba(245, 165, 36, 0.14);
+    --green: #34d399;
+    --green-soft: rgba(52, 211, 153, 0.13);
+    --violet: #a78bfa;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #05080f;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .slide {
+    position: relative;
+    width: 1280px;
+    height: 720px;
+    margin: 0 auto 28px;
+    padding: 46px 58px 40px;
+    background:
+      radial-gradient(1000px 520px at 88% -10%, rgba(245, 165, 36, 0.13), transparent 60%),
+      radial-gradient(820px 520px at -8% 108%, rgba(52, 211, 153, 0.10), transparent 62%),
+      linear-gradient(180deg, #0a1220 0%, #070d18 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    page-break-after: always;
+    break-after: page;
+  }
+  .slide:last-of-type { page-break-after: auto; break-after: auto; }
+
+  .rule {
+    position: absolute; inset: 0 0 auto 0; height: 5px;
+    background: linear-gradient(90deg, var(--amber), var(--green) 55%, var(--violet));
+    opacity: 0.9;
+  }
+
+  /* ---------- header ---------- */
+  .kicker {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 14px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 13px; border-radius: 999px;
+    border: 1px solid rgba(245, 165, 36, 0.45);
+    background: var(--amber-soft); color: var(--amber);
+    font-weight: 700; letter-spacing: 0.1em; font-size: 11px;
+  }
+  .chip.green { border-color: rgba(52,211,153,.45); background: var(--green-soft); color: var(--green); }
+
+  h1 {
+    margin: 0 0 10px;
+    font-size: 40px;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+  h1 .accent { color: var(--amber); }
+  .sub {
+    margin: 0;
+    font-size: 16.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    max-width: 980px;
+  }
+
+  /* ---------- layout ---------- */
+  .body { flex: 1; display: grid; gap: 20px; margin-top: 24px; min-height: 0; }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-2 { grid-template-columns: 1.05fr 1fr; }
+  .cols-2-wide { grid-template-columns: 1.35fr 1fr; }
+  .rows { display: grid; gap: 14px; align-content: start; }
+
+  .card {
+    background: linear-gradient(180deg, var(--panel) 0%, rgba(15, 24, 41, 0.55) 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex; flex-direction: column; gap: 9px;
+  }
+  .card h3 {
+    margin: 0;
+    font-size: 15.5px;
+    letter-spacing: 0.01em;
+    color: var(--text);
+  }
+  .card p { margin: 0; font-size: 13.6px; line-height: 1.5; color: #b9c8e0; }
+  .card .num {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--amber);
+  }
+
+  ul.ticks { margin: 0; padding: 0; list-style: none; display: grid; gap: 11px; }
+  ul.ticks li {
+    position: relative; padding-left: 26px;
+    font-size: 14.4px; line-height: 1.5; color: #c8d5ea;
+  }
+  ul.ticks li::before {
+    content: ""; position: absolute; left: 0; top: 6px;
+    width: 12px; height: 12px; border-radius: 4px;
+    background: linear-gradient(135deg, var(--amber), #ffca6a);
+    box-shadow: 0 0 0 3px rgba(245, 165, 36, 0.14);
+  }
+  ul.ticks.green li::before { background: linear-gradient(135deg, var(--green), #6ee7b7); box-shadow: 0 0 0 3px rgba(52,211,153,.14); }
+  ul.ticks strong { color: #fff; font-weight: 650; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 22px; }
+  .stat {
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; background: rgba(19, 31, 54, 0.55);
+  }
+  .stat .v { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: #fff; line-height: 1; }
+  .stat .v span { color: var(--amber); }
+  .stat .k { margin-top: 7px; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+
+  .shot {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    background: #05080f;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+  .footer {
+    position: absolute; left: 58px; right: 58px; bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11.5px; color: #6f829e; letter-spacing: 0.05em;
+  }
+  .footer .brand { color: #8b9cb8; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.18); display: block; }
+  .dots i.on { background: var(--amber); }
+
+  /* title slide extras */
+  .brandmark {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 6px;
+  }
+  .logo {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(150deg, var(--amber), #e07b12);
+    display: grid; place-items: center;
+    font-weight: 900; font-size: 18px; color: #1a1206; letter-spacing: -0.03em;
+  }
+  .brandmark .name { font-size: 15px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #dbe6f7; }
+
+  .pipeline { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 4px; }
+  .step {
+    border: 1px solid var(--line); border-radius: 11px; padding: 12px 12px 13px;
+    background: rgba(19, 31, 54, 0.5); position: relative;
+  }
+  .step .i { font-size: 10.5px; font-weight: 800; color: var(--amber); letter-spacing: 0.12em; }
+  .step .t { margin-top: 6px; font-size: 12.8px; font-weight: 650; color: #fff; line-height: 1.3; }
+  .step .d { margin-top: 4px; font-size: 11.2px; color: var(--muted); line-height: 1.35; }
+
+  .badge-soft {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11.5px; color: #a9bdd9; border: 1px solid var(--line);
+    border-radius: 999px; padding: 5px 11px; background: rgba(19,31,54,.6);
+  }
+
+  .note {
+    margin-top: auto; font-size: 12px; color: #7f92ae;
+    border-top: 1px solid var(--line); padding-top: 10px;
+  }
+
+  @media screen {
+    body { padding: 34px 0 10px; }
+    .slide { border-radius: 16px; box-shadow: 0 22px 60px rgba(0,0,0,0.55); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. INNOVATION ============ -->
+<section class="slide">
+  <div class="rule"></div>
+  <div class="brandmark">
+    <div class="logo">SM</div>
+    <div class="name">SchemeMatch</div>
+  </div>
+  <div class="kicker">
+    <span class="chip">01 — Innovation</span>
+    <span>Originality · Differentiation · Relevance</span>
+  </div>
+
+  <h1>A <span class="accent">transparent eligibility engine</span>, not another scheme search box.</h1>
+  <p class="sub">Citizens get a ranked answer to “which schemes fit me, and why” — computed from statutory rules, with the reasoning and the missing paperwork exposed.</p>
+
+  <div class="body rows" style="margin-top: 22px;">
+    <div class="pipeline">
+      <div class="step"><div class="i">STEP 1</div><div class="t">Profile capture</div><div class="d">Form, free text, voice, or demo persona</div></div>
+      <div class="step"><div class="i">STEP 2</div><div class="t">Hard gates</div><div class="d">Domicile, age, gender, income ceiling, land</div></div>
+      <div class="step"><div class="i">STEP 3</div><div class="t">Weighted score</div><div class="d">Income fit, occupation, category, conditions</div></div>
+      <div class="step"><div class="i">STEP 4</div><div class="t">Explanation</div><div class="d">“Why it fits” in plain language</div></div>
+      <div class="step"><div class="i">STEP 5</div><div class="t">Gap detection</div><div class="d">Flags missing documents before applying</div></div>
+    </div>
+
+    <div class="cols-3" style="display:grid;">
+      <div class="card">
+        <div class="num">Differentiator</div>
+        <h3>Deterministic, auditable rules</h3>
+        <p>Every match is a reproducible function of 22 statutory rule sets — no hallucinated eligibility, no black-box ranking.</p>
+      </div>
+      <div class="card">
+        <div class="num">Differentiator</div>
+        <h3>AI assists, it does not decide</h3>
+        <p>Gemini only parses free text into a profile. The score itself is rule-based, and the app works fully with no API key.</p>
+      </div>
+      <div class="card">
+        <div class="num">Differentiator</div>
+        <h3>Explains the “no” too</h3>
+        <p>Ineligible schemes state which gate failed, so citizens learn the criteria instead of guessing.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">SchemeMatch · Team CodeHackers</span>
+    <span class="dots"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></span>
+  </div>
+</section>
+
+<!-- ============ 2. IMPACT ============ -->
+<section class="slide">
+  <div class="rule"></div>
+  <div class="kicker">
+    <span class="chip green">02 — Impact</span>
+    <span>Importance of the problem · Credible benefit</span>
+  </div>
+
+  <h1>Eligible people miss benefits because the rules are <span class="accent">invisible</span>.</h1>
+  <p class="sub">Welfare information is spread across departmental portals, written in bureaucratic language, and gated by criteria that are never surfaced to the person who qualifies.</p>
+
+  <div class="body cols-2-wide" style="margin-top: 24px;">
+    <div class="rows">
+      <div class="card">
+        <div class="num">The problem</div>
+        <h3>Discovery is the bottleneck, not intent</h3>
+        <p>A student, a 2-acre farmer, and a woman head of household qualify for different schemes from the same portal — and none of them can tell which without reading every rule.</p>
+      </div>
+      <div class="card">
+        <div class="num">Who benefits</div>
+        <h3>Six citizen personas modelled end to end</h3>
+        <p>College student, small farmer, homemaker and head of family, unemployed graduate, senior citizen, micro-entrepreneur — each with a one-click demo profile.</p>
+      </div>
+      <div class="card">
+        <div class="num">Access</div>
+        <h3>Kannada, Hindi, and voice</h3>
+        <p>Full trilingual UI plus speech input and read-aloud output, so low-literacy and first-time internet users are not excluded by the interface.</p>
+      </div>
+    </div>
+
+    <div class="rows">
+      <div class="card" style="background: linear-gradient(180deg, rgba(245,165,36,.12), rgba(15,24,41,.6)); border-color: rgba(245,165,36,.3);">
+        <div class="num" style="color:#ffca6a;">Credible benefit</div>
+        <h3>Fewer rejected applications</h3>
+        <p>Document-gap detection surfaces Aadhaar–NPCI seeding, Nadakacheri RD certificates and land records <em>before</em> submission — the failure points that send citizens back to the counter.</p>
+      </div>
+      <div class="stat-row" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
+        <div class="stat"><div class="v">22</div><div class="k">Schemes encoded</div></div>
+        <div class="stat"><div class="v">3</div><div class="k">Languages</div></div>
+      </div>
+      <div class="stat-row" style="grid-template-columns: 1fr 1fr; margin-top: 0;">
+        <div class="stat"><div class="v">11 + 11</div><div class="k">State &amp; central</div></div>
+        <div class="stat"><div class="v">1</div><div class="k">Screen journey</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">SchemeMatch · Team CodeHackers</span>
+    <span class="dots"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></span>
+  </div>
+</section>
+
+<!-- ============ 3. EXECUTION ============ -->
+<section class="slide">
+  <div class="rule"></div>
+  <div class="kicker">
+    <span class="chip">03 — Execution</span>
+    <span>Implementation depth · Testing · Build quality</span>
+  </div>
+
+  <h1>Built, tested, and <span class="accent">deployed</span> in one repository.</h1>
+  <p class="sub">A typed React client, an Express API, a 22-scheme rule engine and a real deployment pipeline — verified end to end, not mocked.</p>
+
+  <div class="body cols-2" style="margin-top: 24px;">
+    <div class="rows">
+      <ul class="ticks">
+        <li><strong>Rule engine</strong> — hard gates, weighted affinity scoring (0–100), gap detection and Markdown report generation in <em>matchingEngine.ts</em>.</li>
+        <li><strong>Bilingual extractor</strong> — regex/keyword parser handling Kannada and Devanagari numerals, used as the deterministic fallback behind Gemini.</li>
+        <li><strong>Hardened AI path</strong> — 15 s extraction and 20 s chat timeouts with graceful fallback, so a stalled model can never hang the UI.</li>
+        <li><strong>18 automated tests</strong> across matching, extraction and speech, run on the Node test runner.</li>
+        <li><strong>Deployment-ready</strong> — honours injected <em>PORT</em>, serves built assets with SPA fallback in production.</li>
+      </ul>
+    </div>
+
+    <div class="rows">
+      <div class="card">
+        <div class="num">Verification</div>
+        <h3>Every claim checked locally</h3>
+        <p><code>tsc --noEmit</code> clean · 18/18 tests passing · Vite production build 415 kB JS / 47 kB CSS · live Render deployment smoke-tested.</p>
+      </div>
+      <div class="card">
+        <div class="num">Stack</div>
+        <h3>Modern, boring, maintainable</h3>
+        <div style="display:flex; flex-wrap:wrap; gap:7px; margin-top:2px;">
+          <span class="badge-soft">React 19</span>
+          <span class="badge-soft">TypeScript 7</span>
+          <span class="badge-soft">Vite 8</span>
+          <span class="badge-soft">Express 4</span>
+          <span class="badge-soft">Tailwind v4</span>
+          <span class="badge-soft">Gemini 3.8 Flash</span>
+          <span class="badge-soft">Web Speech API</span>
+          <span class="badge-soft">Render</span>
+        </div>
+      </div>
+      <div class="stat-row" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div class="stat"><div class="v">6.2k</div><div class="k">Lines of code</div></div>
+        <div class="stat"><div class="v">18</div><div class="k">Tests passing</div></div>
+        <div class="stat"><div class="v">4</div><div class="k">API routes</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">SchemeMatch · Team CodeHackers</span>
+    <span class="dots"><i></i><i></i><i class="on"></i><i></i><i></i><i></i></span>
+  </div>
+</section>
+
+<!-- ============ 4. UI/UX ============ -->
+<section class="slide">
+  <div class="rule"></div>
+  <div class="kicker">
+    <span class="chip green">04 — UI/UX</span>
+    <span>Usability · Clarity · Accessibility · Coherent journey</span>
+  </div>
+
+  <h1>One screen from “who am I” to <span class="accent">“apply here”</span>.</h1>
+  <p class="sub">Profile on the left, ranked matches with visible reasoning on the right — no account, no wizard, no dead ends.</p>
+
+  <div class="body cols-2-wide" style="margin-top: 22px;">
+    <div class="rows">
+      <ul class="ticks green">
+        <li><strong>Three input paths</strong> — guided form, natural language, or a one-click persona, all landing in the same profile state.</li>
+        <li><strong>Reasoning on the card</strong> — match percentage, contributing factors, and the specific documents still missing.</li>
+        <li><strong>Language switch that persists</strong> — English, ಕನ್ನಡ, हिन्दी across labels, cards and generated reports.</li>
+        <li><strong>Voice both ways</strong> — speak the profile, listen to the explanation.</li>
+        <li><strong>Formal report</strong> — downloadable four-part Markdown report with the statutory disclaimer.</li>
+      </ul>
+
+      <div class="card" style="margin-top: 2px;">
+        <div class="num">The journey</div>
+        <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap; font-size:12.5px; color:#c8d5ea; margin-top:2px;">
+          <span class="badge-soft">Profile</span><span style="color:#5e7392;">→</span>
+          <span class="badge-soft">Ranked matches</span><span style="color:#5e7392;">→</span>
+          <span class="badge-soft">Why it fits</span><span style="color:#5e7392;">→</span>
+          <span class="badge-soft">Document checklist</span><span style="color:#5e7392;">→</span>
+          <span class="badge-soft">Official report</span>
+        </div>
+      </div>
+    </div>
+    <div class="shot" style="max-height: 420px;">
+      <img src="assets/app.png" alt="SchemeMatch interface" />
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">SchemeMatch · Team CodeHackers</span>
+    <span class="dots"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></span>
+  </div>
+</section>
+
+<!-- ============ 5. DEMO ============ -->
+<section class="slide">
+  <div class="rule"></div>
+  <div class="kicker">
+    <span class="chip">05 — Demo</span>
+    <span>Real functionality · Supported by evidence</span>
+  </div>
+
+  <h1>Live in production: <span class="accent">schemematch-codehackers.onrender.com</span></h1>
+  <p class="sub">A 60-second path a judge can run themselves, with the expected on-screen result at each step.</p>
+
+  <div class="body" style="grid-template-columns: 1.25fr 1fr; display:grid; margin-top: 22px;">
+    <div class="rows">
+      <div class="card">
+        <div class="num">Step 1 · 10 s</div>
+        <h3>Pick “Deepthi (College Student)”</h3>
+        <p>A 21-year-old OBC student in Belagavi, family income ₹1.5 L. Profile, category and income populate instantly.</p>
+      </div>
+      <div class="card">
+        <div class="num">Step 2 · 20 s</div>
+        <h3>Read the ranked matches</h3>
+        <p>SSP scholarship, Vidyasiri, AICTE Pragati and Shakti surface as high matches; each card states why and what is missing.</p>
+      </div>
+      <div class="card">
+        <div class="num">Step 3 · 20 s</div>
+        <h3>Open the checklist and report</h3>
+        <p>Document readiness toggles live, and “View Formal Report” generates the four-part Markdown report with the disclaimer.</p>
+      </div>
+    </div>
+
+    <div class="rows">
+      <div class="card" style="background: linear-gradient(180deg, rgba(52,211,153,.12), rgba(15,24,41,.6)); border-color: rgba(52,211,153,.3);">
+        <div class="num" style="color:#6ee7b7;">Observed on the live site</div>
+        <h3>19 matched · 22 verified programs</h3>
+        <p>The deployed build reports 22 schemes in its knowledge base and a complete profile score, with zero console errors and stylesheet loading confirmed.</p>
+      </div>
+      <div class="card">
+        <div class="num">Also demoable</div>
+        <h3>Voice + natural language</h3>
+        <p>Type “I am a 21 year old female B.Sc student from Belagavi with family income 1.5 lakh” and the extractor builds the same profile deterministically.</p>
+      </div>
+      <div class="card">
+        <div class="num">Honest scope</div>
+        <h3>Rule engine runs client-side</h3>
+        <p>On the static deployment the two AI routes are unavailable; the UI falls back to local parsing. The same repo ships a web-service blueprint that enables them.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">SchemeMatch · Team CodeHackers</span>
+    <span class="dots"><i></i><i></i><i></i><i></i><i class="on"></i><i></i></span>
+  </div>
+</section>
+
+<!-- ============ 6. FEASIBILITY ============ -->
+<section class="slide">
+  <div class="rule"></div>
+  <div class="kicker">
+    <span class="chip green">06 — Feasibility</span>
+    <span>Practicality · Deployment · Constraints · Viability</span>
+  </div>
+
+  <h1>Deployable today on a <span class="accent">free tier</span>, with a clear path to scale.</h1>
+  <p class="sub">Static hosting for the rule engine now; a Node web service when AI endpoints are enabled. No proprietary infrastructure, no vendor lock-in.</p>
+
+  <div class="body cols-3" style="margin-top: 24px;">
+    <div class="rows">
+      <div class="card">
+        <div class="num">Deployment</div>
+        <h3>Two supported paths</h3>
+        <p><strong>Static</strong> — publish <em>dist</em>, rule engine runs in the browser.<br /><strong>Web service</strong> — Express + Vite build, AI routes live, health check at <em>/api/health</em>.</p>
+      </div>
+      <div class="card">
+        <div class="num">Cost</div>
+        <h3>Free tier viable</h3>
+        <p>Render free instance, zero database, Gemini billed only per AI call — and the app degrades to zero-cost deterministic behaviour without a key.</p>
+      </div>
+    </div>
+
+    <div class="rows">
+      <div class="card">
+        <div class="num">Constraints, stated plainly</div>
+        <h3>What it does not do yet</h3>
+        <ul class="ticks" style="gap:8px;">
+          <li>No accounts or saved profiles — state is per session.</li>
+          <li>No application submission; it links to Seva Sindhu and myScheme.</li>
+          <li>Scheme rules are a curated snapshot and must be maintained.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="num">Trust</div>
+        <h3>Verification is built in</h3>
+        <p>Every recommendation and report carries the statutory disclaimer that approval is not guaranteed and official portals remain the source of truth.</p>
+      </div>
+    </div>
+
+    <div class="rows">
+      <div class="card" style="background: linear-gradient(180deg, rgba(167,139,250,.12), rgba(15,24,41,.6)); border-color: rgba(167,139,250,.28);">
+        <div class="num" style="color:#c4b5fd;">Next 90 days</div>
+        <h3>Roadmap</h3>
+        <ul class="ticks green" style="gap:8px;">
+          <li>Persistence + citizen sign-in</li>
+          <li>All 28 states and UTs</li>
+          <li>Admin rule updates with citations</li>
+          <li>Renewal and deadline reminders</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="num">Maintenance</div>
+        <h3>Data stays out of the components</h3>
+        <p>Scheme criteria live in one typed dataset, so adding or correcting a scheme is a data change — not a rewrite.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">SchemeMatch · Team CodeHackers</span>
+    <span class="dots"><i></i><i></i><i></i><i></i><i></i><i class="on"></i></span>
+  </div>
+</section>
+
+</body>
+</html>
