@@ -1,0 +1,63 @@
+# SchemeMatch — dependency manifest
+#
+# SchemeMatch is a Node.js / TypeScript application, so the authoritative
+# installer is npm, not pip:
+#
+#     npm install
+#
+# This file lists every *direct* dependency at the exact version pinned in
+# package-lock.json, so the versions are readable without opening the lockfile.
+# `pip install -r requirements.txt` will not work here — the packages are
+# published to the npm registry, not PyPI.
+#
+# Runtime: Node.js >= 20 (https://nodejs.org)
+# Lockfile: package-lock.json (260 packages total, direct + transitive)
+
+# ---------------------------------------------------------------------------
+# Runtime dependencies
+# ---------------------------------------------------------------------------
+
+# AI — Google Gemini SDK used for profile extraction and the scheme copilot
+@google/genai==2.32.0
+
+# Server — HTTP API and static/production asset serving
+express==4.22.3
+
+# Environment — loads GEMINI_API_KEY and APP_URL from .env
+dotenv==17.4.2
+
+# UI — React and its DOM renderer
+react==19.3.1
+react-dom==19.3.1
+
+# UI — icon set and animation primitives
+lucide-react==0.546.0
+motion==12.43.0
+
+# Build — bundler and React plugin
+vite==8.3.5
+@vitejs/plugin-react==6.1.2
+
+# Build — Tailwind CSS v4 integrated into the Vite pipeline
+tailwindcss==4.3.3
+@tailwindcss/vite==4.3.3
+
+# ---------------------------------------------------------------------------
+# Development dependencies
+# ---------------------------------------------------------------------------
+
+# TypeScript — compiler and runtime execution of server.ts
+typescript==7.0.2
+tsx==4.23.15
+
+# Types — ambient declarations for Node, Express, and React
+@types/node==22.20.5
+@types/express==4.17.25
+@types/react==19.3.0
+@types/react-dom==19.3.0
+
+# ---------------------------------------------------------------------------
+# CommonJS-style install of the above (npm reads package.json, not this file):
+#     npm install
+#     npm run dev
+# ---------------------------------------------------------------------------
