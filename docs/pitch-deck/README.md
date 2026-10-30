@@ -2,6 +2,7 @@
 
 Six slides, one per Level 2 evaluation criterion: Innovation, Impact, Execution, UI/UX, Demo, Feasibility.
 
+- `SchemeMatch-Pitch-Deck.pptx` — editable PowerPoint (6 slides, 16:9), native shapes and text
 - `SchemeMatch-Pitch-Deck.pdf` — submission copy (6 pages, 1280×720)
 - `index.html` — source deck; open it in a browser or present it full screen
 - `assets/app.png` — live product screenshot used on the UI/UX slide
