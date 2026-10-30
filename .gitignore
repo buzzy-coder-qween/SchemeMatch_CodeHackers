@@ -29,6 +29,11 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 
+# Python virtual environment (optional compatibility step, gitignored)
+.venv/
+venv/
+__pycache__/
+
 # Tool-generated workspace folders
 .aistudio/
 .freebuff/

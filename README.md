@@ -99,7 +99,7 @@ Browser ──► POST /api/extract-profile ──► Gemini (15 s timeout) ─�
 
 ### Setup
 
-Each step is one command in its own block — copy and run them in order.
+Each step is one command in its own block — copy and run them in order. Steps 3–6 set up a Python virtual environment, and step 7 installs the project's actual Node dependencies.
 
 **Step 1 — Clone the repository**
 
@@ -113,13 +113,67 @@ git clone https://github.com/buzzy-coder-qween/SchemeMatch_CodeHackers.git
 cd SchemeMatch_CodeHackers
 ```
 
-**Step 3 — Install dependencies** (Node 20+ required; takes about a minute)
+**Step 3 — Confirm your Node version** (must be 20 or newer — this is the most common install failure)
+
+```bash
+node -v
+```
+
+**Step 4 — Create a Python virtual environment** (optional; `.venv/` is gitignored)
+
+```bash
+python -m venv .venv
+```
+
+**Step 5 — Activate the virtual environment**
+
+macOS / Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Windows Command Prompt:
+
+```bat
+.venv\Scripts\activate.bat
+```
+
+Windows Git Bash:
+
+```bash
+source .venv/Scripts/activate
+```
+
+Your prompt should now start with `(.venv)`. To leave it later, run `deactivate`.
+
+**Step 6 — Install from requirements.txt**
+
+```bash
+pip install -r requirements.txt
+```
+
+> This completes successfully but installs **nothing** — SchemeMatch has no Python dependencies. Every pin in [requirements.txt](requirements.txt) is commented out deliberately, because those packages live on the npm registry and pip would otherwise abort with `Invalid requirement: '@google/genai==2.32.0'`. The file is a readable, version-pinned manifest of what `package.json` declares.
+
+**Step 7 — Install the project dependencies** (this is the real install; takes about a minute)
 
 ```bash
 npm install
 ```
 
-**Step 4 — Create your environment file**
+For a byte-reproducible install that matches `package-lock.json` exactly:
+
+```bash
+npm ci
+```
+
+**Step 8 — Create your environment file**
 
 macOS / Linux / Git Bash:
 
@@ -133,11 +187,11 @@ Windows PowerShell / Command Prompt:
 copy .env.example .env
 ```
 
-**Step 5 — Add your Gemini API key** (optional — skip and the app runs on the rule engine)
+**Step 9 — Add your Gemini API key** (optional — skip and the app runs on the rule engine)
 
 Set `GEMINI_API_KEY="your-key-here"` and save. Open the file with any editor — `code .env` in VS Code, `notepad .env` on Windows, or just edit it by hand.
 
-**Step 6 — Start the development server**
+**Step 10 — Start the development server**
 
 ```bash
 npm run dev
@@ -145,7 +199,7 @@ npm run dev
 
 Open **http://localhost:3000**. Express serves the API and Vite serves the UI with hot reload.
 
-**Step 7 — Verify it is running** (in a second terminal)
+**Step 11 — Verify it is running** (in a second terminal)
 
 ```bash
 curl http://localhost:3000/api/health
@@ -157,7 +211,53 @@ Expected response:
 {"status":"ok","hasGeminiKey":false,"model":"gemini-3.8-flash","timestamp":"2026-10-30T20:14:34.347Z"}
 ```
 
-`hasGeminiKey` becomes `true` once Step 5 is filled in.
+`hasGeminiKey` becomes `true` once Step 9 is filled in.
+
+### Troubleshooting the Install
+
+**`npm install` fails or `npm: command not found`** — install Node.js 20+ from [nodejs.org](https://nodejs.org), then reopen your terminal so `PATH` refreshes and re-run `node -v`.
+
+**`EBADENGINE` / `Unsupported engine`** — your Node is older than 20. Vite 8 requires Node 20.19+ or 22.12+. Upgrade Node; do not lower `engines` in `package.json`.
+
+**`pip install -r requirements.txt` reports `Invalid requirement: '@google/genai==...'`** — that is expected on the older version of this file. It is not the dependency installer: SchemeMatch's packages are on npm. Run `npm install` instead.
+
+**`EADDRINUSE` on port 3000** — another server is already running. Start on a different port:
+
+```bash
+PORT=8080 npm run dev
+```
+
+```powershell
+$env:PORT="8080"; npm run dev
+```
+
+**Corrupted `node_modules` or a half-finished install** — rebuild it from the lockfile:
+
+```bash
+rm -rf node_modules
+```
+
+```bash
+npm ci
+```
+
+Windows Command Prompt: `rmdir /s /q node_modules`.
+
+**Corporate proxy / registry errors (`ETIMEDOUT`, `ECONNREFUSED`)** — point npm at your proxy, then retry:
+
+```bash
+npm config set proxy http://your-proxy:8080
+```
+
+**`Cannot find module 'express'` or a blank page after `npm run dev`** — you are likely in the wrong directory. `package.json` must be in the current folder; re-run Step 2.
+
+**`python: command not found`** — steps 4–6 are optional and only needed for the virtual-environment flow. Install Python 3.9+ from [python.org](https://www.python.org/downloads/) (tick "Add python.exe to PATH"), or skip straight to Step 7.
+
+**PowerShell blocks activation with "running scripts is disabled"** — allow it for the current session only:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
 
 ### Other Commands
 
