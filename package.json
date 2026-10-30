@@ -1,0 +1,55 @@
+{
+  "name": "schemematch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Explainable, rule-based government scheme discovery and eligibility assistant for Karnataka and India.",
+  "license": "MIT",
+  "author": "Team CodeHackers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buzzy-coder-qween/SchemeMatch_CodeHackers.git"
+  },
+  "keywords": [
+    "government-schemes",
+    "eligibility-engine",
+    "karnataka",
+    "gemini",
+    "react",
+    "express",
+    "hackathon"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "start": "tsx server.ts",
+    "build": "vite build",
+    "test": "tsx --test src/utils/matchingEngine.test.ts src/utils/profileExtractor.test.ts src/utils/speech.test.ts",
+    "lint": "tsc --noEmit",
+    "preview": "vite preview",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\""
+  },
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "vite": "^8.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2"
+  }
+}
