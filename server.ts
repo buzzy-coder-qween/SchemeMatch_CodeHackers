@@ -209,9 +209,13 @@ async function startServer() {
     }
   }
 
-  // Ensure port uses DEFAULT_APP_PORT if present, but never default to PORT 8080 (which is Nginx proxy)
-  if (process.env.DEFAULT_APP_PORT && !args.includes('--port')) {
-    port = parseInt(process.env.DEFAULT_APP_PORT, 10);
+  // Precedence: --port flag > PORT (injected by hosts like Render) > DEFAULT_APP_PORT > 3000
+  const hasPortFlag = args.some((arg) => arg === '--port' || arg.startsWith('--port='));
+  if (!hasPortFlag) {
+    const envPort = parseInt(process.env.PORT || process.env.DEFAULT_APP_PORT || '', 10);
+    if (Number.isInteger(envPort) && envPort > 0) {
+      port = envPort;
+    }
   }
 
   if (process.env.NODE_ENV !== 'production') {

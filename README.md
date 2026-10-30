@@ -128,6 +128,22 @@ npm run dev               # http://localhost:3000
 | `npm run lint` | TypeScript type check (`tsc --noEmit`) |
 | `npm run clean` | Remove build output |
 
+## Deployment
+
+SchemeMatch is an Express app with `/api` routes, so it deploys as a **Node web service**, not a static site. A static host would serve the bundled UI but the AI extraction and copilot endpoints would 404 (the UI falls back to local parsing, so it stays usable, just without AI).
+
+A [render.yaml](render.yaml) blueprint is included. On Render, choose **New → Web Service** and use:
+
+| Setting | Value |
+| --- | --- |
+| Runtime | Node |
+| Build command | `npm install && npm run build` |
+| Start command | `npm start` |
+| Health check path | `/api/health` |
+| Env vars | `NODE_ENV=production`, `GEMINI_API_KEY=<your key>` |
+
+The server reads the port from `PORT` (or `--port`), binds `0.0.0.0`, and with `NODE_ENV=production` serves the built assets from `dist/` with SPA fallback.
+
 ## API Reference
 
 | Method | Endpoint | Description |

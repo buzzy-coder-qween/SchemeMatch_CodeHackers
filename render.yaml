@@ -1,0 +1,18 @@
+# Render blueprint for SchemeMatch.
+# The app is an Express server with /api routes, so it must run as a Web
+# Service, not a Static Site (a static site would not serve the AI endpoints).
+services:
+  - type: web
+    name: schemematch
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Set this in the Render dashboard (Environment tab); never commit it.
+      - key: GEMINI_API_KEY
+        sync: false
