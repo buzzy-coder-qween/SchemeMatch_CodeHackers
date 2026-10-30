@@ -49,7 +49,7 @@ The knowledge base holds **22 schemes** (11 Karnataka state, 11 central) in a ty
 <summary><strong>Request flow</strong></summary>
 
 ```
-Browser ──► POST /api/extract-profile ──► Gemini (2.5 s timeout) ──► rule-based fallback
+Browser ──► POST /api/extract-profile ──► Gemini (15 s timeout) ──► rule-based fallback
         └─► POST /api/copilot-chat   ──► Gemini ──► grounded offline reply
         └─► ranking, scoring, reports: all client-side, no network
 ```
@@ -99,13 +99,108 @@ Browser ──► POST /api/extract-profile ──► Gemini (2.5 s timeout) ─
 
 ### Setup
 
+Each step is one command in its own block — copy and run them in order.
+
+**Step 1 — Clone the repository**
+
 ```bash
 git clone https://github.com/buzzy-coder-qween/SchemeMatch_CodeHackers.git
-cd SchemeMatch_CodeHackers
+```
 
+**Step 2 — Enter the project directory**
+
+```bash
+cd SchemeMatch_CodeHackers
+```
+
+**Step 3 — Install dependencies** (Node 20+ required; takes about a minute)
+
+```bash
 npm install
-cp .env.example .env      # then add your Gemini key
-npm run dev               # http://localhost:3000
+```
+
+**Step 4 — Create your environment file**
+
+macOS / Linux / Git Bash:
+
+```bash
+cp .env.example .env
+```
+
+Windows PowerShell / Command Prompt:
+
+```powershell
+copy .env.example .env
+```
+
+**Step 5 — Add your Gemini API key** (optional — skip and the app runs on the rule engine)
+
+Set `GEMINI_API_KEY="your-key-here"` and save. Open the file with any editor — `code .env` in VS Code, `notepad .env` on Windows, or just edit it by hand.
+
+**Step 6 — Start the development server**
+
+```bash
+npm run dev
+```
+
+Open **http://localhost:3000**. Express serves the API and Vite serves the UI with hot reload.
+
+**Step 7 — Verify it is running** (in a second terminal)
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+Expected response:
+
+```json
+{"status":"ok","hasGeminiKey":false,"model":"gemini-3.8-flash","timestamp":"2026-10-30T20:14:34.347Z"}
+```
+
+`hasGeminiKey` becomes `true` once Step 5 is filled in.
+
+### Other Commands
+
+**Run the checks before pushing**
+
+```bash
+npm run lint
+```
+
+```bash
+npm test
+```
+
+**Build and serve the production bundle**
+
+```bash
+npm run build
+```
+
+```bash
+NODE_ENV=production npm start
+```
+
+Windows PowerShell:
+
+```powershell
+$env:NODE_ENV="production"; npm start
+```
+
+**Serve on a different port**
+
+```bash
+PORT=8080 npm start
+```
+
+```bash
+npm start -- --port=8080
+```
+
+**Remove build output**
+
+```bash
+npm run clean
 ```
 
 ### Environment Variables
@@ -115,7 +210,7 @@ npm run dev               # http://localhost:3000
 | `GEMINI_API_KEY` | No | Enables AI profile extraction and the copilot. Without it the app uses the rule-based extractor and offline copilot answers. |
 | `APP_URL` | No | Public URL of the deployment, used for self-referential links. Defaults to `http://localhost:3000`. |
 
-`PORT` can be overridden with `--port` when starting the server; the default is `3000`.
+The server resolves its port from `--port` first, then the `PORT` environment variable, then `DEFAULT_APP_PORT`, and finally defaults to `3000`. It binds `0.0.0.0`, so it works on hosts that inject `PORT` at runtime.
 
 ### Scripts
 
@@ -123,7 +218,7 @@ npm run dev               # http://localhost:3000
 | --- | --- |
 | `npm run dev` | Start Express + Vite with HMR on port 3000 |
 | `npm run build` | Build the client bundle into `dist/` |
-| `npm start` | Run the server (`NODE_ENV=production` serves `dist/`) |
+| `npm start` | Run the server. Without `NODE_ENV=production` it runs Vite in middleware mode; set `NODE_ENV=production` to serve the prebuilt `dist/` bundle |
 | `npm test` | Run the matching-engine, extractor, and speech test suites |
 | `npm run lint` | TypeScript type check (`tsc --noEmit`) |
 | `npm run clean` | Remove build output |
