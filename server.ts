@@ -17,14 +17,31 @@ const PORT = 3000;
 
 app.use(express.json());
 
+const GEMINI_MODEL = 'gemini-3.8-flash';
+const EXTRACTION_TIMEOUT_MS = 15_000;
+const CHAT_TIMEOUT_MS = 20_000;
+
 // Initialize Gemini client if API key is present
 const apiKey = process.env.GEMINI_API_KEY;
 let aiClient: GoogleGenAI | null = null;
 if (apiKey) {
   try {
-    aiClient = new GoogleGenAI();
+    aiClient = new GoogleGenAI({ apiKey });
   } catch (err) {
     console.warn('Could not initialize GoogleGenAI client:', err);
+  }
+}
+
+/** Reject if the Gemini call does not settle in time, so citizens always get an answer. */
+async function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(message)), ms);
+  });
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -33,6 +50,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
     hasGeminiKey: Boolean(apiKey),
+    model: GEMINI_MODEL,
     timestamp: new Date().toISOString(),
   });
 });
@@ -79,20 +97,17 @@ Return a STRICT JSON object with these keys only (omit or set null if not mentio
   "summary": "Brief 1-2 sentence citizen profile summary"
 }`;
 
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini API timeout')), 2500)
+      const response = await withTimeout(
+        aiClient.models.generateContent({
+          model: GEMINI_MODEL,
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json',
+          },
+        }),
+        EXTRACTION_TIMEOUT_MS,
+        'Gemini profile extraction timed out'
       );
-
-      const geminiPromise = aiClient.models.generateContent({
-        model: 'gemini-3.8-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0.1,
-        },
-      });
-
-      const response = await Promise.race([geminiPromise, timeoutPromise]);
 
       const responseText = response.text?.trim() || '{}';
       const parsed = JSON.parse(responseText);
@@ -138,14 +153,17 @@ Always ensure you provide realistic, accurate criteria, document guidance, and a
 Conclude your response with the mandatory notice:
 "Disclaimer: This assistant provides likely matches and guidance based on your profile. It does not guarantee benefit approval. You must verify current eligibility conditions, required documents, deadlines, and application procedures with the relevant official government authority before applying."`;
 
-      const response = await aiClient.models.generateContent({
-        model: 'gemini-3.8-flash',
-        contents: message,
-        config: {
-          systemInstruction,
-          temperature: 0.3,
-        },
-      });
+      const response = await withTimeout(
+        aiClient.models.generateContent({
+          model: GEMINI_MODEL,
+          contents: message,
+          config: {
+            systemInstruction,
+          },
+        }),
+        CHAT_TIMEOUT_MS,
+        'Gemini chat timed out'
+      );
 
       res.json({ reply: response.text });
       return;
